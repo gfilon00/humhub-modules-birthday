@@ -74,35 +74,38 @@ class Module extends \humhub\components\Module
         $tomorrow = new \DateTime('tomorrow');
         $bdayersTomorrow = array();
         $bdayersToday = array();
+        $tomorrow = $tomorrow->format('d-m');
         foreach ($users as $user){
-            if ($user->profile->birthday == $tomorrow){
+            $date = new \DateTime($user->profile->birthday);
+            $date = $date->format('d-m');
+            if ($date == $tomorrow){
                 $bdayersTomorrow[] = $user;
             } else {
                 $bdayersToday [] = $user;
             }
         }
-	
+
         $usersToMail = User::find()->where(['user.status' => User::STATUS_ENABLED]);
        
         Console::startProgress($done, $totalUsers, 'Sending update e-mails to users... ', false);
 	
         // Bday mail notification
         if ( count($users) ) {
-	foreach ($usersToMail as $userToMail){
-            try {
-                $mail = Yii::$app->mailer->compose('bdayMail', ['tomorrowers' => $bdayersTomorrow, 'todayers' => $bdayersToday ]);
-                $mail->setFrom([Setting::Get('systemEmailAddress', 'mailing') => Setting::Get('systemEmailName', 'mailing')]);
-                //$mail->setTo($userToMail->email);
-                $mail->setTo('gfilon@enclave.com.ar');
-                $mail->setSubject(Yii::t('BirthdayModule.base', 'Tomorrows birthdays'));
-                $mail->send();
-                
-            } catch (\Swift_SwiftException $ex) {
-                Yii::error('Could not send bday mail to: ' . $user->email . ' - Error:  ' . $ex->getMessage());
-            } catch (Exception $ex) {
-                Yii::error('Could not send bday mail to: ' . $user->email . ' - Error:  ' . $ex->getMessage());
-            }
-	}
+    	   foreach ($usersToMail as $userToMail){
+                try {
+                    $mail = Yii::$app->mailer->compose('bdayMail', ['tomorrowers' => $bdayersTomorrow, 'todayers' => $bdayersToday ]);
+                    $mail->setFrom([Setting::Get('systemEmailAddress', 'mailing') => Setting::Get('systemEmailName', 'mailing')]);
+                    //$mail->setTo($userToMail->email);
+                    $mail->setTo('gfilon@enclave.com.ar');
+                    $mail->setSubject(Yii::t('BirthdayModule.base', 'Tomorrows birthdays'));
+                    $mail->send();
+                    
+                } catch (\Swift_SwiftException $ex) {
+                    Yii::error('Could not send bday mail to: ' . $user->email . ' - Error:  ' . $ex->getMessage());
+                } catch (Exception $ex) {
+                    Yii::error('Could not send bday mail to: ' . $user->email . ' - Error:  ' . $ex->getMessage());
+                }
+    	    }
         } else {$controller->stdout('No bdays to send.' . PHP_EOL, \yii\helpers\Console::FG_GREEN);}
         // End of Bday mailing
         Console::endProgress(true);
