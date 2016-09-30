@@ -92,9 +92,9 @@ class Module extends \humhub\components\Module
 
         // Bday mail notification
         if ( count($users) ) {
-    	   foreach ($usersToMail as $userToMail){
+    	  // foreach ($usersToMail as $userToMail){
                 try {
-                    $mail = Yii::$app->mailer->compose('@birthdaymail', ['tomorrowers' => $bdayersTomorrow, 'todayers' => $bdayersToday ]);
+                    $mail = Yii::$app->mailer->compose(['html' => '@birthdaymail'], ['tomorrowers' => $bdayersTomorrow, 'todayers' => $bdayersToday ]);
                     $mail->setFrom([Setting::Get('systemEmailAddress', 'mailing') => Setting::Get('systemEmailName', 'mailing')]);
                     //$mail->setTo($userToMail->email);
                     $mail->setTo('gfilon@enclave.com.ar');
@@ -106,7 +106,7 @@ class Module extends \humhub\components\Module
                 } catch (Exception $ex) {
                     Yii::error('Could not send bday mail to: ' . $user->email . ' - Error:  ' . $ex->getMessage());
                 }
-    	    }
+    	   // }
         } else {$controller->stdout('No bdays to send.' . PHP_EOL, \yii\helpers\Console::FG_GREEN);}
         // End of Bday mailing
         Console::endProgress(true);

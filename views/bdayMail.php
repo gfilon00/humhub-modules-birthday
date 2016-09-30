@@ -7,7 +7,7 @@
 	</div>
 	<table>
 		<?php foreach ($todayers as $user) {
-			echo '</tr>' . $user->profile->firstname . ', ' . $user->profile->firstname . '</tr>';
+			echo '</tr>' . $user->profile->lastname . ', ' . $user->profile->firstname . '</tr><br/>';
 		} ?>
 	</table>
 	<div style="clear: both;">
@@ -15,7 +15,7 @@
 	</div>
 	<table>
 		<?php foreach ($tomorrowers as $user) {
-			echo '</tr>' . $user->profile->firstname . ', ' . $user->profile->firstname . '</tr>';
+			echo '</tr>' . $user->profile->lastname . ', ' . $user->profile->firstname . '</tr><br/>';
 		} ?>
 	</table>
 </div>

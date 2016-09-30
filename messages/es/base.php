@@ -26,7 +26,7 @@ return [
     'The number of days future bithdays will be shown within.' => 'Número de días para mostrar los siguientes cumpleaños.',
     'Tomorrow' => 'Mañana',
     'You may configure the number of days within the upcoming birthdays are shown.' => 'Debes configurar el número de días para mostrar los cumpleaños.',
-    'today' => 'hoy',
+    'today' => 'Hoy',
     'Tomorrows birthdays' => 'Cumplen años mañana!',
     'Birthdays' => '¡Cumpleaños!',
     'Tomorrow' => 'Mañana',
