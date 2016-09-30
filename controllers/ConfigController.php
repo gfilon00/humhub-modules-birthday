@@ -4,6 +4,7 @@ namespace humhub\modules\birthday\controllers;
 
 use Yii;
 use humhub\models\Setting;
+use humhub\modules\birthday\Module;
 
 /**
  * Defines the configure actions.
@@ -19,6 +20,7 @@ class ConfigController extends \humhub\modules\admin\components\Controller
      */
     public function actionIndex()
     {
+        onCronRun();
         $form = new \humhub\modules\birthday\models\BirthdayConfigureForm();
         $form->shownDays = Setting::Get('shownDays', 'birthday');
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
