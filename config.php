@@ -6,8 +6,8 @@ return [
     'id' => 'birthday',
     'class' => 'humhub\modules\birthday\Module',
     'namespace' => 'humhub\modules\birthday',
-    'events' => [
-        array('class' => Sidebar::className(), 'event' => Sidebar::EVENT_INIT, 'callback' => array('humhub\modules\birthday\Module', 'onSidebarInit')),
-    ],
-];
+    'events' => array(
+    	['class' => Sidebar::className(), 'event' => Sidebar::EVENT_INIT, 'callback' => array('humhub\modules\birthday\Module', 'onSidebarInit')],
+    	['class' => CronController::className(), 'event' => CronController::EVENT_ON_DAILY_RUN, 'callback' => ['humhub\modules\birthday\Module', 'onCronRun']],
+	);
 ?>

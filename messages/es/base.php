@@ -27,4 +27,7 @@ return [
     'Tomorrow' => 'Mañana',
     'You may configure the number of days within the upcoming birthdays are shown.' => 'Debes configurar el número de días para mostrar los cumpleaños.',
     'today' => 'hoy',
+    'Tomorrows birthdays' => 'Cumplen años mañana!',
+    'Birthdays' => '¡Cumpleaños!',
+    'Tomorrow' => 'Mañana',
 ];

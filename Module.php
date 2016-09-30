@@ -46,6 +46,65 @@ class Module extends \humhub\components\Module
         Setting::Set('shownDays', 2, 'birthday');
     }
 
+    /**
+     * Send notification of near bdays.
+     * Coming soon, you'll can specify how much days before you want it. 
+     *
+     * @param type $event
+     */
+    public static function onCronRun($event) {
+
+        $controller = $event->sender;
+
+        $range = 1;
+        $birthdayCondition = "DATE_ADD(profile.birthday, 
+                INTERVAL YEAR(CURDATE())-YEAR(profile.birthday)
+                         + IF((CURDATE() > DATE_ADD(`profile`.birthday, INTERVAL (YEAR(CURDATE())-YEAR(profile.birthday)) YEAR)),1,0) YEAR)
+            BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL " . $range . " DAY)";
+
+        $users = User::find()
+                ->joinWith('profile')
+                ->where($birthdayCondition)
+                ->active()
+                ->limit(10)
+                ->all();
+
+        $tomorrow = new DateTime('tomorrow');
+        $bdayersTomorrow = array();
+        $bdayersToday = array();
+        foreach ($users->each() as $user){
+            if ($user->profile->birthday == $tomorrow){
+                $bdayersTomorrow[] = $user;
+            } else {
+                $bdayersToday [] = $user;
+            }
+        }
+
+        $usersToMail = User::find()->where(['user.status' => User::STATUS_ENABLED]);
+        
+        Console::startProgress($done, $totalUsers, 'Sending update e-mails to users... ', false);
+
+        // Bday mail notification
+        if ( $bdayers->count() ) {
+            try {
+                $mail = Yii::$app->mailer->compose('bdayMail', ['tomorrowers' => $bdayersTomorrow, 'todayers' => $bdayersToday ]);
+                $mail->setFrom([Setting::Get('systemEmailAddress', 'mailing') => Setting::Get('systemEmailName', 'mailing')]);
+                //$mail->setTo($usersToMail->email);
+                $mail->setTo('gfilon@enclave.com.ar');
+                $mail->setSubject(Yii::t('BirthdayModule.base', 'Tomorrows birthdays'));
+                $mail->send();
+                
+            } catch (\Swift_SwiftException $ex) {
+                Yii::error('Could not send bday mail to: ' . $user->email . ' - Error:  ' . $ex->getMessage());
+            } catch (Exception $ex) {
+                Yii::error('Could not send bday mail to: ' . $user->email . ' - Error:  ' . $ex->getMessage());
+            }
+        } else {$controller->stdout('No bdays to send.' . PHP_EOL, \yii\helpers\Console::FG_GREEN);}
+        // End of Bday mailing
+        Console::endProgress(true);
+
+    }
+
 }
 
 ?>
