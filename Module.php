@@ -88,12 +88,13 @@ class Module extends \humhub\components\Module
         $usersToMail = User::find()->where(['user.status' => User::STATUS_ENABLED]);
        
         Console::startProgress($done, $totalUsers, 'Sending update e-mails to users... ', false);
-	
+	    Yii::setAlias('@birthdaymail', __DIR__ . '\views\bdayMail' );
+
         // Bday mail notification
         if ( count($users) ) {
     	   foreach ($usersToMail as $userToMail){
                 try {
-                    $mail = Yii::$app->mailer->compose('bdayMail', ['tomorrowers' => $bdayersTomorrow, 'todayers' => $bdayersToday ]);
+                    $mail = Yii::$app->mailer->compose('@birthdaymail', ['tomorrowers' => $bdayersTomorrow, 'todayers' => $bdayersToday ]);
                     $mail->setFrom([Setting::Get('systemEmailAddress', 'mailing') => Setting::Get('systemEmailName', 'mailing')]);
                     //$mail->setTo($userToMail->email);
                     $mail->setTo('gfilon@enclave.com.ar');
