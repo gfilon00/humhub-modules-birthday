@@ -6,6 +6,8 @@ use Yii;
 use humhub\modules\birthday\widgets\BirthdaySidebarWidget;
 use humhub\models\Setting;
 use yii\helpers\Url;
+use humhub\modules\user\models\User;
+use yii\helpers\Console;
 
 /**
  * BirthdayModule is responsible for the the birthday functions.
@@ -69,27 +71,28 @@ class Module extends \humhub\components\Module
                 ->limit(10)
                 ->all();
 
-        $tomorrow = new DateTime('tomorrow');
+        $tomorrow = new \DateTime('tomorrow');
         $bdayersTomorrow = array();
         $bdayersToday = array();
-        foreach ($users->each() as $user){
+        foreach ($users as $user){
             if ($user->profile->birthday == $tomorrow){
                 $bdayersTomorrow[] = $user;
             } else {
                 $bdayersToday [] = $user;
             }
         }
-
+	
         $usersToMail = User::find()->where(['user.status' => User::STATUS_ENABLED]);
-        
+       
         Console::startProgress($done, $totalUsers, 'Sending update e-mails to users... ', false);
-
+	
         // Bday mail notification
-        if ( $bdayers->count() ) {
+        if ( count($users) ) {
+	foreach ($usersToMail as $userToMail){
             try {
                 $mail = Yii::$app->mailer->compose('bdayMail', ['tomorrowers' => $bdayersTomorrow, 'todayers' => $bdayersToday ]);
                 $mail->setFrom([Setting::Get('systemEmailAddress', 'mailing') => Setting::Get('systemEmailName', 'mailing')]);
-                //$mail->setTo($usersToMail->email);
+                //$mail->setTo($userToMail->email);
                 $mail->setTo('gfilon@enclave.com.ar');
                 $mail->setSubject(Yii::t('BirthdayModule.base', 'Tomorrows birthdays'));
                 $mail->send();
@@ -99,6 +102,7 @@ class Module extends \humhub\components\Module
             } catch (Exception $ex) {
                 Yii::error('Could not send bday mail to: ' . $user->email . ' - Error:  ' . $ex->getMessage());
             }
+	}
         } else {$controller->stdout('No bdays to send.' . PHP_EOL, \yii\helpers\Console::FG_GREEN);}
         // End of Bday mailing
         Console::endProgress(true);

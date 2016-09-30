@@ -20,7 +20,7 @@ class ConfigController extends \humhub\modules\admin\components\Controller
      */
     public function actionIndex()
     {
-        onCronRun();
+       
         $form = new \humhub\modules\birthday\models\BirthdayConfigureForm();
         $form->shownDays = Setting::Get('shownDays', 'birthday');
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
