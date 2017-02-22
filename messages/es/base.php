@@ -37,4 +37,5 @@ return [
     'Friday' => 'Viernes',
     'Saturday' => 'Sabado',
     'Sunday' => 'Domingo',
+    'Next Birthdays' => 'Proximos Cumpleaños',
 ];

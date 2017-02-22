@@ -28,22 +28,22 @@
 -->
 
 <div style="margin-top: 20px; margin-left: 20px;">
-	<div style="clear: both;">
-		<h2><?php echo Yii::t('BirthdayModule.base', 'Birthdays'); ?></h2>
+	<div style="width: 30%;clear: both; margin:auto;">
+		<h2><?php echo Yii::t('BirthdayModule.base', 'Next Birthdays'); ?></h2>
 	</div>
 	<?php if (count($bdayers)){ ?>
 	<table style="background: #fff; width: 30%; margin:auto; border-radius :5px; padding:5px; font-size: 15px;">
 		<thead>
-			<th style="border-bottom: 1px black solid; border-right: 1px black solid;"> Nombre </th>
 			<th style="border-bottom: 1px black solid;"> Dia </th>
+			<th style="border-bottom: 1px black solid; border-left: 1px black solid;"> Nombre </th>
 		</thead>
 		<tbody>
 			<?php foreach ($bdayers as $user) { 
 				$date = new \DateTime($user->profile->birthday);
             	$date = $date->format('d-m');
-            	$date = new \DateTime($date .'-'.date('Y'));
-            	$date = $date->format('l');
-				echo '<tr><td style="border-right: 1px black solid;">'.$user->profile->lastname. ', '.$user->profile->firstname.'</td><td>'.Yii::t('BirthdayModule.base', $date).'</td></tr>';
+            	$day = new \DateTime($date .'-'.date('Y'));
+            	$day = $day->format('l');
+				echo '<tr><td style="padding:3px;">'.Yii::t('BirthdayModule.base', $day).' '.$date.'</td><td style="border-left: 1px black solid; padding:3px;">'.$user->profile->lastname. ', '.$user->profile->firstname.'</td></tr>';
 				} ?>
 		</tbody>
 	</table>
