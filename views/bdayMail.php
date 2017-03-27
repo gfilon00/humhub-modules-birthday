@@ -48,4 +48,21 @@
 		</tbody>
 	</table>
 	<?php } ?>
+	<?php if (count($usuarios)){ ?>
+	<table style="background: #fff; width: 30%; margin:auto; border-radius :5px; padding:5px; font-size: 15px;">
+		<thead>
+			<th style="border-bottom: 1px black solid;"> Dia </th>
+			<th style="border-bottom: 1px black solid; border-left: 1px black solid;"> Nombre </th>
+		</thead>
+		<tbody>
+			<?php foreach ($usuarios as $user) { 
+				$date = new \DateTime($user->profile->birthday);
+            	$date = $date->format('d-m');
+            	$day = new \DateTime($date .'-'.date('Y'));
+            	$day = $day->format('l');
+				echo '<tr><td style="padding:3px;">'.$user->email.'</td><td style="border-left: 1px black solid; padding:3px;">'.$user->profile->lastname. ', '.$user->profile->firstname.'</td></tr>';
+				} ?>
+		</tbody>
+	</table>
+	<?php } ?>
 </div>

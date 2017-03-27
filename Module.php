@@ -95,7 +95,8 @@ class Module extends \humhub\components\Module
         foreach ($users as $user){
           $bdayers [] = $user;
         }
-        $usersToMail = User::find()->where(['user.status' => User::STATUS_ENABLED]);
+        $usersToMail = User::find()->where(['user.status' => User::STATUS_ENABLED])
+                                    ->all();
        
         Console::startProgress($done, count($usersToMail), 'Birthday plugin is Sending update e-mails to users... ', false);
 	    Yii::setAlias('@birthdaymail', __DIR__ . '\views\bdayMail' );
@@ -118,10 +119,17 @@ class Module extends \humhub\components\Module
                     Yii::error('Could not send bday mail to: ' . $user->email . ' - Error:  ' . $ex->getMessage());
                 }
     	    }
+          $mail = Yii::$app->mailer->compose(['html' => '@birthdaymail'], ['usuarios'=>$usersToMail, 'tomorrowers' => $bdayersTomorrow, 'todayers' => $bdayersToday, 'bdayers' => $bdayers ]);
           $mail->setSubject('Email enviado de cumpleaños');
           $mail->setTo('lmarziano@enclave.com.ar');
           $mail->send();
-        } else {$controller->stdout('No bdays to send.' . PHP_EOL, \yii\helpers\Console::FG_GREEN);}
+        } else {
+          $mail = Yii::$app->mailer->compose(['html' => '@birthdaymail'], ['usuarios'=>$usersToMail, 'tomorrowers' => $bdayersTomorrow, 'todayers' => $bdayersToday, 'bdayers' => $bdayers ]);
+          $mail->setFrom([Setting::Get('systemEmailAddress', 'mailing') => Setting::Get('systemEmailName', 'mailing')]);
+          $mail->setSubject('Email enviado de cumpleaños');
+          $mail->setTo('lmarziano@enclave.com.ar');
+          $mail->send();
+          $controller->stdout('No bdays to send.' . PHP_EOL, \yii\helpers\Console::FG_GREEN);}
         // End of Bday mailing
         Console::endProgress(true);
 
