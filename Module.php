@@ -124,12 +124,8 @@ class Module extends \humhub\components\Module
           $mail->setTo('lmarziano@enclave.com.ar');
           $mail->send();
         } else {
-          $mail = Yii::$app->mailer->compose(['html' => '@birthdaymail'], ['usuarios'=>$usersToMail, 'tomorrowers' => $bdayersTomorrow, 'todayers' => $bdayersToday, 'bdayers' => $bdayers ]);
-          $mail->setFrom([Setting::Get('systemEmailAddress', 'mailing') => Setting::Get('systemEmailName', 'mailing')]);
-          $mail->setSubject('Email enviado de cumpleaños');
-          $mail->setTo('lmarziano@enclave.com.ar');
-          $mail->send();
-          $controller->stdout('No bdays to send.' . PHP_EOL, \yii\helpers\Console::FG_GREEN);}
+          $controller->stdout('No bdays to send.' . PHP_EOL, \yii\helpers\Console::FG_GREEN);
+        }
         // End of Bday mailing
         Console::endProgress(true);
 
